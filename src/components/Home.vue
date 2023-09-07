@@ -14,6 +14,7 @@
       {{ activity.start }}-{{ activity.finish }}({{ activity.timeTook }}) {{ activity.activity }}
     </li>
   </ul>
+  <p>Version: {{ version }}</p>
 </template>
 
 <script lang="ts">
@@ -29,6 +30,7 @@ interface Data {
   start: Date | null
   activity: string
   activities: Activity[]
+  version: string
 }
 
 const timeOptions: DateTimeFormatOptions = {
@@ -36,6 +38,7 @@ const timeOptions: DateTimeFormatOptions = {
   hour: `2-digit`,
   minute: `2-digit`,
 }
+
 export default defineComponent({
   name: `Home`,
   components: {},
@@ -43,6 +46,7 @@ export default defineComponent({
     start: null,
     activity: ``,
     activities: [],
+    version: require(`../../package.json`).version,
   }),
   computed: {},
   watch: {},
