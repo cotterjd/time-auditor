@@ -48,13 +48,14 @@ export default defineComponent({
   watch: {},
   methods: {
     submitActivity() {
-      const startTime = this.start?.toLocaleTimeString([], timeOptions)
-      const endTime = new Date().toLocaleTimeString([], timeOptions)
+      if (!this.start) return
+      const startTime: string = this.start?.toLocaleTimeString([], timeOptions)
+      const endTime: string = new Date().toLocaleTimeString([], timeOptions)
       const newActivity = {
         start: startTime,
         finish: endTime,
         activity: this.activity,
-        timeTook: Math.floor(((new Date()).getTime() - this.start) / 1000 / 60),
+        timeTook: Math.floor(((new Date()).getTime() - this.start.getTime()) / 1000 / 60),
       }
       this.activities = [newActivity, ...this.activities]
       this.start = new Date()
