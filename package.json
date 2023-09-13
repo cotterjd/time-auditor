@@ -1,6 +1,6 @@
 {
   "name": "time-auditor",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -56,6 +56,7 @@
       "no-alert": 0,
       "no-return-assign": 0,
       "space-before-function-paren": 0,
+      "@typescript-eslint/no-empty-function": 0,
       "@typescript-eslint/no-unused-vars": [ 1, { "args": "none" }],
       "@typescript-eslint/no-var-requires": 0,
       "arrow-parens": 0
