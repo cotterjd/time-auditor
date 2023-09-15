@@ -105,7 +105,7 @@ export default defineComponent({
         start: startTime,
         finish: endTime,
         activity: this.activity,
-        timeTook: Math.floor(((new Date()).getTime() - this.start.getTime()) / 1000 / 60),
+        timeTook: this.getTimeTook(),
       }
       const objectStore = this.db.transaction([`activities`], `readwrite`).objectStore(`activities`)
       const addRequest = objectStore.add(newActivity)
@@ -123,6 +123,11 @@ export default defineComponent({
       localStorage.setItem(`start`, new Date().toISOString())
       this.start = new Date()
     },
+    getTimeTook() {
+      if (!this.start) return ``
+      const minutes = Math.floor(((new Date()).getTime() - this.start.getTime()) / 1000 / 60)
+      return `${Math.floor(minutes / 60)}:${minutes % 60}`
+    }
   },
 })
 
