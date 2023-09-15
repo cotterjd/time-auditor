@@ -15,7 +15,6 @@
       {{ activity.start }}-{{ activity.finish }}({{ activity.timeTook }}) {{ activity.activity }}
     </li>
   </ul>
-  <pre>{{ groupedActivities }}</pre>
   <p>Version: {{ version }}</p>
 </template>
 
