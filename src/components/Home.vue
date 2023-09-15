@@ -9,22 +9,26 @@
     </div>
   </div>
 
-  <ul class="activity-list">
-    <li v-for="activity in activities" :key="activity.id">
+  <ul v-for="dateKey in Object.keys(groupedActivities)" :key="dateKey" class="activity-list">
+    <span>{{ dateKey }}</span>
+    <li v-for="activity in groupedActivities[dateKey]" :key="activity.id">
       {{ activity.start }}-{{ activity.finish }}({{ activity.timeTook }}) {{ activity.activity }}
     </li>
   </ul>
+  <pre>{{ groupedActivities }}</pre>
   <p>Version: {{ version }}</p>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { DateTimeFormatOptions } from '../types'
+import { groupBy } from 'ramda'
 
 interface Activity {
   start: string
   finish: string
   activity: string
+  date: string
 }
 interface Data {
   start: Date | null
@@ -32,6 +36,7 @@ interface Data {
   activities: Activity[]
   version: string
   db: IDBDatabase | null
+  groupedActivities: any
 }
 
 const timeOptions: DateTimeFormatOptions = {
@@ -47,11 +52,17 @@ export default defineComponent({
     start: null,
     activity: ``,
     activities: [],
+    groupedActivities: {},
     version: require(`../../package.json`).version,
     db: null, 
   }),
   computed: {},
-  watch: {},
+  watch: {
+    activities (newVal) {
+      console.log(`activities`, newVal)
+      this.groupedActivities = groupBy((activity: Activity) => activity.date, newVal)
+    },
+  },
   created() {
     const openDBRequest = window.indexedDB.open(`timeLogs`, 1)
     openDBRequest.onupgradeneeded = (evt: any) => {
@@ -68,6 +79,7 @@ export default defineComponent({
       objectStore.createIndex(`start`, `start`, { unique: false })
       objectStore.createIndex(`finish`, `finish`, { unique: false })
       objectStore.createIndex(`activity`, `activity`, { unique: false })
+      objectStore.createIndex(`date`, `date`, { unique: false })
 
       this.db = db
     }
@@ -106,6 +118,7 @@ export default defineComponent({
         finish: endTime,
         activity: this.activity,
         timeTook: this.getTimeTook(),
+        date: new Date().toLocaleDateString(),
       }
       const objectStore = this.db.transaction([`activities`], `readwrite`).objectStore(`activities`)
       const addRequest = objectStore.add(newActivity)
