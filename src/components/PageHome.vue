@@ -93,7 +93,7 @@ export default defineComponent({
       objectStore.openCursor().onsuccess = (event: any) => {
         const cursor = event?.target?.result
         if (cursor) {
-          this.activities.unshift(cursor.value)
+          this.activities = [cursor.value, ...this.activities]
           cursor.continue()
         }
       }
