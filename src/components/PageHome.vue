@@ -1,13 +1,6 @@
 <template>
-  <div id="home-container">
-    <p><i>No more wondering where the day went</i></p>
-    <button v-if="!start" @click="startDay">Start Day</button>
 
-    <div v-show="start">
-      <input v-model="activity" @keyup.enter="submitActivity" />
-      <button @click="submitActivity">Submit</button>
-    </div>
-  </div>
+  <ta-header start="start" @submitActivity="submitActivity" />
 
   <ul v-for="dateKey in Object.keys(groupedActivities)" :key="dateKey" class="activity-list">
     <span>{{ dateKey }}</span>
@@ -15,11 +8,13 @@
       {{ activity.start }}-{{ activity.finish }}({{ activity.timeTook }}) {{ activity.activity }}
     </li>
   </ul>
-  <p>Version: {{ version }}</p>
+  <version />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import Version from './Version.vue'
+import TaHeader from './Header.vue'
 import { DateTimeFormatOptions } from '../types'
 import { groupBy } from 'ramda'
 
@@ -31,9 +26,7 @@ interface Activity {
 }
 interface Data {
   start: Date | null
-  activity: string
   activities: Activity[]
-  version: string
   db: IDBDatabase | null
   groupedActivities: any
 }
@@ -46,13 +39,14 @@ const timeOptions: DateTimeFormatOptions = {
 
 export default defineComponent({
   name: `Home`,
-  components: {},
+  components: {
+    Version,
+    TaHeader,
+  },
   data: (): Data => ({
     start: null,
-    activity: ``,
     activities: [],
     groupedActivities: {},
-    version: require(`../../package.json`).version,
     db: null, 
   }),
   computed: {},
@@ -106,7 +100,7 @@ export default defineComponent({
     }
   },
   methods: {
-    submitActivity() {
+    submitActivity(activity: string) {
       if (!this.db) return
       if (!this.start) return
 
@@ -115,7 +109,7 @@ export default defineComponent({
       const newActivity = {
         start: startTime,
         finish: endTime,
-        activity: this.activity,
+        activity: activity,
         timeTook: this.getTimeTook(),
         date: new Date().toLocaleDateString(),
       }
@@ -125,7 +119,6 @@ export default defineComponent({
         this.activities = [newActivity, ...this.activities]
         localStorage.setItem(`start`, new Date().toISOString())
         this.start = new Date()
-        this.activity = ``
       }
       addRequest.onerror = (evt: Event) => {
         console.error(`Error adding activity`, evt)
@@ -152,8 +145,5 @@ export default defineComponent({
   text-align: left;
 }
 
-#home-container {
-  text-align: center
-}
 
 </style>
