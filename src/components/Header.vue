@@ -1,7 +1,7 @@
 <template>
   <div class="header-container">
     <p><i>No more wondering where the day went</i></p>
-    <button v-if="!start" @click="startDay">Start Day</button>
+    <button v-if="!start" @click="startTimer">Start Day</button>
 
     <div v-show="start">
       <input v-model="activity" @keyup.enter="submitActivity" />
@@ -19,12 +19,15 @@ export default defineComponent({
   data: () => ({
     activity: ``,
   }),
-  props: [`start`, `submitActivity`],
+  props: [`start`, `submitActivity`, `startDay`],
   methods: {
     onSubmit() {
       this.$emit(`submitActivity`, this.activity)
       this.activity = ``
-    }
+    },
+    startTimer() {
+      this.startDay()
+    },
   },
 })
 </script>

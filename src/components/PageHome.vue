@@ -1,13 +1,8 @@
 <template>
+  <ta-header :start="start" @submitActivity="submitActivity" :startDay="startDay" />
 
-  <ta-header start="start" @submitActivity="submitActivity" />
+  <activity-list :groupedActivities="groupedActivities" />
 
-  <ul v-for="dateKey in Object.keys(groupedActivities)" :key="dateKey" class="activity-list">
-    <span>{{ dateKey }}</span>
-    <li v-for="activity in groupedActivities[dateKey]" :key="activity.id">
-      {{ activity.start }}-{{ activity.finish }}({{ activity.timeTook }}) {{ activity.activity }}
-    </li>
-  </ul>
   <version />
 </template>
 
@@ -15,6 +10,7 @@
 import { defineComponent } from 'vue'
 import Version from './Version.vue'
 import TaHeader from './Header.vue'
+import ActivityList from './ActivityList.vue'
 import { DateTimeFormatOptions } from '../types'
 import { groupBy } from 'ramda'
 
@@ -42,6 +38,7 @@ export default defineComponent({
   components: {
     Version,
     TaHeader,
+    ActivityList,
   },
   data: (): Data => ({
     start: null,
@@ -52,7 +49,6 @@ export default defineComponent({
   computed: {},
   watch: {
     activities (newVal) {
-      console.log(`activities`, newVal)
       this.groupedActivities = groupBy((activity: Activity) => activity.date, newVal)
     },
   },
@@ -111,7 +107,7 @@ export default defineComponent({
         finish: endTime,
         activity: activity,
         timeTook: this.getTimeTook(),
-        date: new Date().toLocaleDateString(),
+        date: `${(new Date()).toString().split(` `)[0]} ${new Date().toLocaleDateString()}`,
       }
       const objectStore = this.db.transaction([`activities`], `readwrite`).objectStore(`activities`)
       const addRequest = objectStore.add(newActivity)
@@ -125,6 +121,7 @@ export default defineComponent({
       }
     },
     startDay() {
+      console.log(`start day`)
       localStorage.setItem(`start`, new Date().toISOString())
       this.start = new Date()
     },
@@ -140,10 +137,6 @@ export default defineComponent({
 
 <style scoped>
 
-.activity-list {
-  list-style: none;
-  text-align: left;
-}
 
 
 </style>
