@@ -3,8 +3,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import Home from './components/PageHome.vue';
+import { defineComponent } from 'vue'
+import Home from './components/PageHome.vue'
 
 export default defineComponent({
   name: `App`,
