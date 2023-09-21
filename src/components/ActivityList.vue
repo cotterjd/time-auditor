@@ -21,5 +21,6 @@ export default defineComponent({
 .activity-list {
   list-style: none;
   text-align: left;
+  padding: 0 10px;
 }
 </style>
