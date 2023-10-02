@@ -1,17 +1,19 @@
 <template>
   <div class="header-container">
     <p><i>No more wondering where the day went</i></p>
-    <button v-if="!start" @click="startTimer">Start Day</button>
+    <button class="btn start-btn" v-if="!start" @click="startTimer">Start Day</button>
 
     <div class="input-container" v-show="start">
       <input class="input" v-model="activity" @keyup.enter="submitActivity" />
-      <button class="submit-btn" @click="onSubmit">Submit Finished Activity</button>
+      <button id="submit-button" class="btn" @click="onSubmit">
+        Submit Finished Activity
+      </button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from "vue"
 
 export default defineComponent({
   name: `Header`,
@@ -34,7 +36,7 @@ export default defineComponent({
 
 <style scoped>
 .header-container {
-  text-align: center
+  text-align: center;
 }
 .input {
   width: 300px;
@@ -50,14 +52,18 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
 }
-.submit-btn {
+.btn {
   width: 310px;
   border-radius: 5px;
   border: 1px solid #ccc;
   padding: 10px 0;
   margin: 5px;
   font-size: 16px;
-  background-color: #49D6DB;
+  background-color: #49d6db;
   color: #000;
+}
+.start-btn {
+  height: 80px;
+  font-size: 20px;
 }
 </style>
