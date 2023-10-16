@@ -81,7 +81,7 @@ export default defineComponent({
     this.start = localStorage.getItem(`start`) ? new Date(localStorage.getItem(`start`) as string) : null
 
     const openDBRequest = window.indexedDB.open(`timeLogs`, 1)
-    openDBRequest.onsuccess = (evt) => {
+    openDBRequest.onsuccess = (evt: any) => {
       const db = evt.target.result
       const objectStore = db.transaction([`activities`], `readwrite`).objectStore(`activities`)
       this.db = db
