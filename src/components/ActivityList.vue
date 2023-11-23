@@ -1,10 +1,12 @@
 <template>
-  <ul v-for="dateKey in Object.keys(groupedActivities)" :key="dateKey" class="activity-list">
-    <span>{{ dateKey }}</span>
-    <li v-for="activity in groupedActivities[dateKey]" :key="activity.id">
-      {{ activity.start }}-{{ activity.finish }}({{ activity.timeTook }}) {{ activity.activity }}
-    </li>
-  </ul>
+  <span>{{ Object.keys(groupedActivities)[index] }}</span>
+  <div v-for="activity in groupedActivities[Object.keys(groupedActivities)[index]]" :key="activity.id">
+    {{ activity.start }}-{{ activity.finish }}({{ activity.timeTook }}) {{ activity.activity }}
+  </div>
+  <div class="footer">
+    <button @click="previous">&lt;</button>
+    <button @click="next">&gt;</button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -14,6 +16,19 @@ export default defineComponent({
   name: `ActivityList`,
   components: {},
   props: [`groupedActivities`],
+  data() {
+    return {
+      index: 0,
+    }
+  },
+  methods: {
+    previous() {
+      this.index--
+    },
+    next() {
+      this.index++
+    },
+  },
 })
 </script>
 
@@ -22,5 +37,9 @@ export default defineComponent({
   list-style: none;
   text-align: left;
   padding: 0 10px;
+}
+.footer button {
+  padding: 10px;
+  width: 50%;
 }
 </style>
