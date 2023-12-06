@@ -1,7 +1,7 @@
 <template>
   <ta-header :start="start" @submitActivity="submitActivity" :startDay="startDay" />
 
-  <activity-list :groupedActivities="groupedActivities" />
+  <activity-list :groupedActivities="groupedActivities" :goBack="goBackADay" :goForward="goForwardADay" />
 
   <version />
 </template>
@@ -13,6 +13,7 @@ import TaHeader from './Header.vue'
 import ActivityList from './ActivityList.vue'
 import { DateTimeFormatOptions } from '../types'
 import { groupBy } from 'ramda'
+import { sub } from 'date-fns'
 
 interface Activity {
   start: string
@@ -25,6 +26,7 @@ interface Data {
   activities: Activity[]
   db: IDBDatabase | null
   groupedActivities: any
+  day: number
 }
 
 const timeOptions: DateTimeFormatOptions = {
@@ -45,12 +47,28 @@ export default defineComponent({
     activities: [],
     groupedActivities: {},
     db: null, 
+    day: 0,
   }),
   computed: {},
   watch: {
     activities (newVal) {
       this.groupedActivities = groupBy((activity: Activity) => activity.date, newVal)
     },
+    day (newVal) {
+      // reset activities to fetch the switched-to day's activities
+      this.activities = []
+      const objectStore = this.db.transaction([`activities`], `readwrite`).objectStore(`activities`)
+
+      objectStore.openCursor().onsuccess = (event) => {
+        const cursor = event?.target?.result
+        if (cursor) {
+          if (cursor.value.date.includes(sub(new Date(), { days: this.day }).toLocaleDateString())) {
+            this.activities = [cursor.value, ...this.activities]
+          }
+          cursor.continue()
+        }
+      }
+    }
   },
   created() {
     const openDBRequest = window.indexedDB.open(`timeLogs`, 1)
@@ -89,7 +107,9 @@ export default defineComponent({
       objectStore.openCursor().onsuccess = (event) => {
         const cursor = event?.target?.result
         if (cursor) {
-          this.activities = [cursor.value, ...this.activities]
+          if (cursor.value.date.includes(new Date().toLocaleDateString())) {
+            this.activities = [cursor.value, ...this.activities]
+          }
           cursor.continue()
         }
       }
@@ -129,7 +149,14 @@ export default defineComponent({
       if (!this.start) return ``
       const minutes = Math.floor(((new Date()).getTime() - this.start.getTime()) / 1000 / 60)
       return `${Math.floor(minutes / 60)}:${minutes % 60}`
-    }
+    },
+    goBackADay() {
+      // looks counter-intuitive but day is being used in a subtract date function
+      this.day++
+    },
+    goForwardADay() {
+      this.day--
+    } 
   },
 })
 

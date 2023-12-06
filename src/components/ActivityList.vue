@@ -4,8 +4,8 @@
     {{ activity.start }}-{{ activity.finish }}({{ activity.timeTook }}) {{ activity.activity }}
   </div>
   <div class="footer">
-    <button @click="previous">&lt;</button>
-    <button @click="next">&gt;</button>
+    <button @click="goForward">&lt;</button>
+    <button @click="goBack">&gt;</button>
   </div>
 </template>
 
@@ -15,19 +15,11 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: `ActivityList`,
   components: {},
-  props: [`groupedActivities`],
+  props: [`groupedActivities`, `goBack`, `goForward`],
   data() {
     return {
       index: 0,
     }
-  },
-  methods: {
-    previous() {
-      this.index--
-    },
-    next() {
-      this.index++
-    },
   },
 })
 </script>
