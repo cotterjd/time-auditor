@@ -1,5 +1,9 @@
 <template>
   <span>{{ Object.keys(groupedActivities)[index] }}</span>
+  <div class="header">
+    <button @click="goForward">&lt;</button>
+    <button @click="goBack">&gt;</button>
+  </div>
   <div
     v-for="activity in groupedActivities[Object.keys(groupedActivities)[index]]"
     :key="activity.id"
@@ -10,10 +14,6 @@
       >{{ activity.start }}-{{ activity.finish }}</span
     >
     <span class="activity-time">{{ activity.timeTook }}</span>
-  </div>
-  <div class="footer">
-    <button @click="goForward">&lt;</button>
-    <button @click="goBack">&gt;</button>
   </div>
 </template>
 
@@ -55,7 +55,7 @@ export default defineComponent({
   display: grid;
   align-items: center;
 }
-.footer button {
+.header button {
   padding: 10px;
   width: 50%;
 }
