@@ -1,6 +1,6 @@
 {
   "name": "time-auditor",
-  "version": "1.11.0",
+  "version": "1.11.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -45,14 +45,8 @@
       "ecmaVersion": 2020
     },
     "rules": {
-      "semi": [
-        1,
-        "never"
-      ],
-      "quotes": [
-        1,
-        "backtick"
-      ],
+      "semi": [1, "never"],
+      "quotes": [1, "backtick"],
       "consistent-return": 0,
       "no-alert": 0,
       "no-return-assign": 0,
@@ -68,10 +62,5 @@
       "arrow-parens": 0
     }
   },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
-  ]
+  "browserslist": ["> 1%", "last 2 versions", "not dead", "not ie 11"]
 }

@@ -1,9 +1,9 @@
 <template>
-  <span>{{ Object.keys(groupedActivities)[index] }}</span>
   <div class="header">
     <button @click="goForward">&lt;</button>
     <button @click="goBack">&gt;</button>
   </div>
+  <span>{{ Object.keys(groupedActivities)[index] }}</span>
   <div
     v-for="activity in groupedActivities[Object.keys(groupedActivities)[index]]"
     :key="activity.id"
