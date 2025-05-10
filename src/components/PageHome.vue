@@ -1,8 +1,9 @@
 <template>
-  <ta-header :start="start" @submitActivity="submitActivity" :startDay="startDay" />
+  <ta-header :start="start" @submitActivity="submitActivity" @aggregateActivity="aggregateActivity" :startDay="startDay" />
 
   <activity-list :groupedActivities="groupedActivities" :goBack="goBackADay" :goForward="goForwardADay" />
 
+    <p>{{this.aggHours}}:{{this.aggMinutes}} of {{this.aggActivity}} in the past week</p>   
   <version />
 </template>
 
@@ -13,7 +14,7 @@ import TaHeader from './Header.vue'
 import ActivityList from './ActivityList.vue'
 import { DateTimeFormatOptions } from '../types'
 import { groupBy } from 'ramda'
-import { sub } from 'date-fns'
+import { sub, subWeeks, differenceInDays } from 'date-fns'
 
 interface Activity {
   start: string
@@ -26,6 +27,9 @@ interface Data {
   activities: Activity[]
   db: IDBDatabase | null
   groupedActivities: any
+  aggActivity: string
+  aggHours: number
+  aggMinutes: number
   day: number
 }
 
@@ -47,6 +51,9 @@ export default defineComponent({
     activities: [],
     groupedActivities: {},
     db: null, 
+    aggActivity: ``,
+    aggHours: 0,
+    aggMinutes: 0,
     day: 0,
   }),
   computed: {},
@@ -139,6 +146,7 @@ export default defineComponent({
       addRequest.onerror = (evt: Event) => {
         console.error(`Error adding activity`, evt)
       }
+
     },
     startDay() {
       console.log(`start day`)
@@ -156,9 +164,35 @@ export default defineComponent({
     },
     goForwardADay() {
       this.day--
-    } 
+    },
+    aggregateActivity(activity: string) {
+      this.aggActivity = activity
+      this.aggHours = 0
+      this.aggMinutes = 0
+      const objectStore = this.db.transaction([`activities`], `readwrite`).objectStore(`activities`)
+      objectStore.openCursor(null, `prev`).onsuccess = (event) => {
+        const cursor = event?.target?.result
+        if (cursor) {
+          if (isOverAWeekOld(new Date(cursor.date))) {
+            return
+          }
+          console.log(cursor.value.date)
+          if (cursor.value.activity === activity) {
+            const [hours, minutes] = cursor.value.timeTook.split(`:`) 
+            this.aggHours = this.aggHours + Number(hours)
+            this.aggMinutes = this.aggMinutes + Number(minutes)
+          }
+          cursor.continue()
+        }
+      }
+    }
   },
 })
+
+function isOverAWeekOld(date: Date): boolean {
+  const sevenDaysAgo = subWeeks(new Date(), 1);
+  return differenceInDays(new Date(), date) > 7;
+}
 
 </script>
 

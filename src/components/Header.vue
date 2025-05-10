@@ -1,5 +1,6 @@
 <template>
   <div class="header-container">
+    <button @click="onAggregate" >Aggregate</button>
     <p><i>No more wondering where the day went</i></p>
     <button class="btn start-btn" v-if="!start" @click="startTimer">Start Day</button>
 
@@ -26,6 +27,9 @@ export default defineComponent({
     onSubmit() {
       this.$emit(`submitActivity`, this.activity)
       this.activity = ``
+    },
+    onAggregate() {
+      this.$emit(`aggregateActivity`, this.activity)
     },
     startTimer() {
       this.startDay()
