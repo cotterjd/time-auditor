@@ -173,7 +173,7 @@ export default defineComponent({
       objectStore.openCursor(null, `prev`).onsuccess = (event) => {
         const cursor = event?.target?.result
         if (cursor) {
-          if (isOverAWeekOld(new Date(cursor.date))) {
+          if (isOverAWeekOld(new Date(cursor.value.date))) {
             return
           }
           console.log(cursor.value.date)
@@ -181,6 +181,10 @@ export default defineComponent({
             const [hours, minutes] = cursor.value.timeTook.split(`:`) 
             this.aggHours = this.aggHours + Number(hours)
             this.aggMinutes = this.aggMinutes + Number(minutes)
+            if (this.aggMinutes >= 60) {
+              this.aggMinues = this.aggMinutes - 60
+              this.aggHours = this.aggHours + 1
+            }
           }
           cursor.continue()
         }

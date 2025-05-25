@@ -1,6 +1,6 @@
 <template>
   <div class="header-container">
-    <button @click="onAggregate" >Aggregate</button>
+    <button @click="onAggregate">Aggregate</button>
     <p><i>No more wondering where the day went</i></p>
     <button class="btn start-btn" v-if="!start" @click="startTimer">Start Day</button>
 
