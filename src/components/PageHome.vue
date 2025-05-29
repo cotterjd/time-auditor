@@ -182,7 +182,7 @@ export default defineComponent({
             this.aggHours = this.aggHours + Number(hours)
             this.aggMinutes = this.aggMinutes + Number(minutes)
             if (this.aggMinutes >= 60) {
-              this.aggMinues = this.aggMinutes - 60
+              this.aggMinutes = this.aggMinutes - 60
               this.aggHours = this.aggHours + 1
             }
           }
